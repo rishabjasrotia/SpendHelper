@@ -1,3 +1,7 @@
-# spendhelper
+# Spendhelper
 
-A new Flutter project.
+Flutter App
+
+Expense Manager using Google Sheet API as backend.
+
+## WIP
