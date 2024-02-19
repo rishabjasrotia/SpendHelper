@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:spendhelper/src/gsheets.dart';
+import 'package:spendhelper/widgets/familyexpense.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:async';
 
-import 'package:spendhelper/widgets/familyexpense.dart';
-
 void main() async {
-  // init GSheets
-
   runApp(const MainApp());
 }
 
@@ -17,7 +14,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Family Expense',
+      title: 'SpendHelper',
       theme: ThemeData(useMaterial3: true),
       home: const MyHomePage(),
       routes: {
