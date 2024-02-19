@@ -16,9 +16,9 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: 'SpendHelper',
       theme: ThemeData(useMaterial3: true),
-      home: const MyHomePage(),
+      home: const FamilyExpense(),
       routes: {
-        '/personalExpense': (context) => const MyHomePage(),
+        '/personalExpense': (context) => const FamilyExpense(),
       },
     );
   }
