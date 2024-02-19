@@ -22,7 +22,7 @@ class MyDrawer extends StatelessWidget {
             leading: Icon(
               Icons.home,
             ),
-            title: const Text('Page 1'),
+            title: const Text('Personal Expense'),
             onTap: () {
               selectedItem(context, 1);
             },
@@ -31,7 +31,7 @@ class MyDrawer extends StatelessWidget {
             leading: Icon(
               Icons.train,
             ),
-            title: const Text('Page 2'),
+            title: const Text('Credit Expense'),
             onTap: () {
               selectedItem(context, 2);
             },
@@ -45,14 +45,11 @@ class MyDrawer extends StatelessWidget {
 void selectedItem(BuildContext context, int index) {
   // Navigator.of(context).pop();
   switch (index) {
-    case 0:
-      Navigator.pushReplacementNamed(context, "/personalExpense");
-      break;
     case 1:
       Navigator.pushReplacementNamed(context, "/personalExpense");
       break;
     case 2:
-      Navigator.pushReplacementNamed(context, "/personalExpense");
+      Navigator.pushReplacementNamed(context, "/creditExpense");
       break;
   }
 }
