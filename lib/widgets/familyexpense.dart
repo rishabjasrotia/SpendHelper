@@ -49,8 +49,8 @@ class Data {
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+class FamilyExpense extends StatelessWidget {
+  const FamilyExpense({super.key});
 
   @override
   Widget build(BuildContext context) {
