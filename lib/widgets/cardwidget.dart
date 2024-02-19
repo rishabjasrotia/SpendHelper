@@ -1,9 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:spendhelper/drawer/mydrawer.dart';
+import 'package:spendhelper/handler/gsheethandler.dart';
 
 double defaultRadius = 8.0;
 const double _cardWidth = 115;
+
+Future<List> fetchFutureTotal() async {
+  final ss = await gSheetLoader();
+  // get worksheet by its title
+  var sheet = ss.worksheetByTitle('Overall');
+  var familyTotalExpense = await sheet?.values.value(column: 4, row: 2);
+  return Future.value([familyTotalExpense, 'Family Expense']);
+}
 
 class CardBasicRoute extends StatefulWidget {
   const CardBasicRoute({super.key});
@@ -14,6 +23,7 @@ class CardBasicRoute extends StatefulWidget {
 
 class CardBasicRouteState extends State<CardBasicRoute> {
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -41,8 +51,8 @@ class CardBasicRouteState extends State<CardBasicRoute> {
                       children: <Widget>[
                         Container(
                           padding: const EdgeInsets.all(15),
-                          child: const Text(
-                            "Today Event \nLive",
+                          child: Text(
+                            "Family Exepnse\n",
                             style: TextStyle(fontSize: 24, color: Colors.white),
                           ),
                         ),
@@ -130,60 +140,67 @@ class CardBasicRouteState extends State<CardBasicRoute> {
   }
 
   Widget gradientCardSample() {
-    return Container(
-      height: 200,
-      width: double.infinity,
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF846AFF),
-              Color(0xFF755EE8),
-              Colors.purpleAccent,
-              Colors.amber,
-            ],
-          ),
-          borderRadius: radius(16)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text('Family Card',
-                      style: MyTextSample.headline(context)!.copyWith(
-                          color: Colors.white,
-                          fontFamily:
-                              "monospace")), //, style: boldTextStyle(color: Colors.white, size: 20)
-                  const Spacer(),
-                  Stack(
-                    children: List.generate(
-                      2,
-                      (index) => Container(
-                        margin: EdgeInsets.only(left: (15 * index).toDouble()),
-                        height: 30,
-                        width: 30,
-                        decoration: BoxDecoration(
-                            borderRadius: radius(100), color: Colors.white54),
-                      ),
+    return FutureBuilder(
+      future: fetchFutureTotal(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+
+          return Container(
+            height: 200,
+            width: double.infinity,
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF846AFF),
+                    Color(0xFF755EE8),
+                    Colors.purpleAccent,
+                    Colors.amber,
+                  ],
+                ),
+                borderRadius: radius(16)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(snapshot.data![1],
+                            style: MyTextSample.headline(context)!.copyWith(
+                                color: Colors.white,
+                                fontFamily:
+                                    "monospace")), //, style: boldTextStyle(color: Colors.white, size: 20)
+                        const Spacer(),
+                        Stack(
+                          children: List.generate(
+                            2,
+                            (index) => Container(
+                              margin: EdgeInsets.only(left: (15 * index).toDouble()),
+                              height: 30,
+                              width: 30,
+                              decoration: BoxDecoration(
+                                  borderRadius: radius(100), color: Colors.white54),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
-              Text('4111 7679 8689 9700',
-                  style: MyTextSample.subhead(context)!
-                      .copyWith(color: Colors.white, fontFamily: "monospace"))
-            ],
-          ),
-          const Text('\$3,000',
-              style: TextStyle(fontSize: 24, color: Colors.white))
-        ],
-      ),
+                  ],
+                ),
+                Text(snapshot.data![0],
+                  style: TextStyle(fontSize: 24, color: Colors.white))
+              ],
+            ),
+          );
+        }
+         // By default show a loading spinner.
+        return const CircularProgressIndicator();
+      }
     );
   }
 }
