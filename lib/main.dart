@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spendhelper/src/gsheets.dart';
+import 'package:spendhelper/widgets/cardwidget.dart';
 import 'package:spendhelper/widgets/creditexpense.dart';
 import 'package:spendhelper/widgets/familyexpense.dart';
 import 'package:spendhelper/widgets/personalexpense.dart';
@@ -18,10 +19,11 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: 'SpendHelper',
       theme: ThemeData(useMaterial3: true),
-      home: const FamilyExpense(),
+      home: const CardBasicRoute(),
       routes: {
         '/personalExpense': (context) => const PersonalExpense(),
         '/creditExpense': (context) => const CreditExpense(),
+        '/familyExpense': (context) => const FamilyExpense(),
       },
     );
   }
