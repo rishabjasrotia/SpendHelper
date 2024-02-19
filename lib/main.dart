@@ -24,6 +24,7 @@ class MainApp extends StatelessWidget {
         '/personalExpense': (context) => const PersonalExpense(),
         '/creditExpense': (context) => const CreditExpense(),
         '/familyExpense': (context) => const FamilyExpense(),
+        '/home': (context) => const CardBasicRoute(),
       },
     );
   }
