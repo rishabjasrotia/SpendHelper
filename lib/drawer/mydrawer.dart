@@ -20,7 +20,7 @@ class MyDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(
-              Icons.home,
+              Icons.person_sharp,
             ),
             title: const Text('Personal Expense'),
             onTap: () {
@@ -29,11 +29,20 @@ class MyDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(
-              Icons.train,
+              Icons.family_restroom,
+            ),
+            title: const Text('Family Expense'),
+            onTap: () {
+              selectedItem(context, 2);
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.credit_card,
             ),
             title: const Text('Credit Expense'),
             onTap: () {
-              selectedItem(context, 2);
+              selectedItem(context, 3);
             },
           ),
         ],
@@ -49,6 +58,9 @@ void selectedItem(BuildContext context, int index) {
       Navigator.pushReplacementNamed(context, "/personalExpense");
       break;
     case 2:
+      Navigator.pushReplacementNamed(context, "/familyExpense");
+      break;
+    case 3:
       Navigator.pushReplacementNamed(context, "/creditExpense");
       break;
   }
