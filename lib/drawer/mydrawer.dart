@@ -20,6 +20,15 @@ class MyDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(
+              Icons.home,
+            ),
+            title: const Text('Home'),
+            onTap: () {
+              selectedItem(context, 0);
+            },
+          ),
+          ListTile(
+            leading: Icon(
               Icons.person_sharp,
             ),
             title: const Text('Personal Expense'),
@@ -54,6 +63,9 @@ class MyDrawer extends StatelessWidget {
 void selectedItem(BuildContext context, int index) {
   // Navigator.of(context).pop();
   switch (index) {
+    case 0:
+      Navigator.pushReplacementNamed(context, "/home");
+      break;
     case 1:
       Navigator.pushReplacementNamed(context, "/personalExpense");
       break;
