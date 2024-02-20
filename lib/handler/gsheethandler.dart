@@ -1,6 +1,8 @@
+import 'package:flutter/painting.dart';
 import 'package:spendhelper/src/gsheets.dart';
 import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:spendhelper/handler/dbmanager.dart';
 
 class Environment {
   static const PROJECT_ID = String.fromEnvironment('PROJECT_ID', defaultValue: '');
@@ -16,7 +18,6 @@ class Environment {
 gSheetLoader() async {
   await dotenv.load(fileName: ".env");
 
-
   var project_id = dotenv.env['PROJECT_ID'];
   var private_key_id = dotenv.env['PRIVATE_KEY_ID'];
   var private_key = dotenv.env['PRIVATE_KEY'];
@@ -25,27 +26,32 @@ gSheetLoader() async {
   var client_x509_cert_url = dotenv.env['CLIENT_X509'];
   var _spreadsheetId = dotenv.env['SPREADSHEET_ID'].toString();
 
-  if (Environment.PROJECT_ID.isEmpty ?? true) {
-    project_id = Environment.PROJECT_ID;
-  } 
-  if (Environment.PRIVATE_KEY_ID.isEmpty ?? true) {
-    private_key_id = Environment.PRIVATE_KEY_ID;
-  } 
-  if (Environment.PRIVATE_KEY.isEmpty ?? true) {
-    private_key = Environment.PRIVATE_KEY;
-  }
-  if (Environment.CLIENT_EMAIL.isEmpty ?? true) {
-    client_email = Environment.CLIENT_EMAIL;
-  } 
-  if (Environment.CLIENT_ID.isEmpty ?? true) {
-    client_id = Environment.CLIENT_ID;
-  }
-  if (Environment.CLIENT_X509.isEmpty ?? true) {
-    client_x509_cert_url = Environment.CLIENT_X509;
-  }   
-  if (Environment.SPREADSHEET_ID.isEmpty ?? true) {
-    _spreadsheetId = Environment.SPREADSHEET_ID;
-  } 
+  final DbManager dbManager = new DbManager();
+  var dbKeys = await dbManager.getData();
+  List.generate(dbKeys.length, (i) {
+    // print(dbKeys[i]['id']);
+    if (dbKeys[i]['key'] == 'SPREADSHEET_ID') {
+      _spreadsheetId = dbKeys[i]['value'].toString();
+    }
+    if (dbKeys[i]['key'] == 'PROJECT_ID') {
+      project_id = dbKeys[i]['value'].toString();
+    }
+    if (dbKeys[i]['key'] == 'PRIVATE_KEY_ID') {
+      private_key_id = dbKeys[i]['value'].toString();
+    }
+    if (dbKeys[i]['key'] == 'CLIENT_EMAIL') {
+      client_email = dbKeys[i]['value'].toString();
+    }
+    if (dbKeys[i]['key'] == 'CLIENT_ID') {
+      client_id = dbKeys[i]['value'].toString();
+    }
+    if (dbKeys[i]['key'] == 'CLIENT_X509') {
+      client_x509_cert_url = dbKeys[i]['value'].toString();
+    }
+    if (dbKeys[i]['key'] == 'PRIVATE_KEY') {
+      private_key = dbKeys[i]['value'].toString();
+    }
+  });
 
   var _credentials = r'''
   {
