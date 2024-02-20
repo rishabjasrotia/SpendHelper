@@ -55,6 +55,8 @@ class CardBasicRouteState extends State<CardBasicRoute> {
             familyExpenseCard(),
             Container(height: 10),
             personalExpenseCard(),
+            Container(height: 10),
+            creditExpenseCard()
           ],
         ),
       ),
