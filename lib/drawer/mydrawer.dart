@@ -53,6 +53,15 @@ class MyDrawer extends StatelessWidget {
             onTap: () {
               selectedItem(context, 3);
             },
+          ),    
+          ListTile(
+            leading: Icon(
+              Icons.credit_card,
+            ),
+            title: const Text('Settings'),
+            onTap: () {
+              selectedItem(context, 4);
+            },
           ),
         ],
       ),
@@ -74,6 +83,9 @@ void selectedItem(BuildContext context, int index) {
       break;
     case 3:
       Navigator.pushReplacementNamed(context, "/creditExpense");
+      break;
+    case 4:
+      Navigator.pushReplacementNamed(context, "/settings");
       break;
   }
 }
