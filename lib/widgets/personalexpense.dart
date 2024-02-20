@@ -20,7 +20,7 @@ Future<List<Data>> fetchData() async {
   var epoch = new DateTime(1899, 12, 30);
 
   List jsonResponse = [];
-  for (var i = 0; i < personalDates!.length; i++) {
+  for (var i = personalDates!.length - 1; i > 0; i--) {
     // TO DO
     var internal = {
       'date':
