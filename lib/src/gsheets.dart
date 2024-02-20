@@ -1342,6 +1342,25 @@ class Worksheet {
     return list?.map(parseString).toList() ?? <String>[];
   }
 
+  Future<List<String>> _getRound(String range, String dimension) async {
+    final encodedRange = Uri.encodeComponent(range);
+    final response = await _client.get(
+      '$_sheetsEndpoint$spreadsheetId/values/$encodedRange?majorDimension=$dimension&valueRenderOption=$renderOption'
+          .toUri(),
+    );
+    checkResponse(response);
+    final list = (jsonDecode(response.body)['values'] as List?)?.first as List?;
+    final roundList = list?.map((e) {
+      return customRound(e, 2);
+    }).toList();
+    return roundList?.map(parseString).toList() ?? <String>[];
+  }
+
+  String customRound(double val, int places) {
+    num mod = pow(10.0, places);
+    return ((val * mod).round().toDouble() / mod).toStringAsFixed(places);
+  }
+
   Future<List<List<String>>> _getAll(
     String range,
     String dimension,
@@ -1817,6 +1836,17 @@ class WorksheetAsValues {
     final range = await _ws._columnRange(column, row, 1);
     return getOrEmpty(await _ws._get(range, dimenColumns));
   }
+
+  Future<String> valueRound({
+    required int column,
+    required int row,
+  }) async {
+    checkIndex('column', column);
+    checkIndex('row', row);
+    final range = await _ws._columnRange(column, row, 1);
+    return getOrEmpty(await _ws._getRound(range, dimenColumns));
+  }
+
 
   /// Fetches cell's value by names of its column and row.
   ///
