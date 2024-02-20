@@ -21,6 +21,9 @@ dependencies:
   path_provider: ^2.1.2
   pedantic: ^1.11.1
   sqflite: ^2.3.2
+  sqflite_common_ffi: ^2.3.2+1
+  sqflite_common_ffi_web: ^0.4.2+3
+  sqlite3_flutter_libs: ^0.5.20
   test: ^1.24.9
 
 dev_dependencies:
@@ -33,3 +36,4 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env
+    - spendhelper.db
