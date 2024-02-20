@@ -6,30 +6,13 @@ import 'package:spendhelper/handler/gsheethandler.dart';
 double defaultRadius = 8.0;
 const double _cardWidth = 115;
 
-Future<List> fetchFamilyTotal() async {
+Future<List> fetchExpenseTotal(column, row, name) async {
   final ss = await gSheetLoader();
   // get worksheet by its title
   var sheet = ss.worksheetByTitle('Overall');
-  var familyTotalExpense = await sheet?.values.value(column: 4, row: 2);
-  return Future.value([familyTotalExpense, 'Family Expense']);
+  var creditTotalExpense = await sheet?.values.valueRound(column: column, row: row);
+  return Future.value([creditTotalExpense, name]);
 }
-
-Future<List> fetchPersonalTotal() async {
-  final ss = await gSheetLoader();
-  // get worksheet by its title
-  var sheet = ss.worksheetByTitle('Overall');
-  var personalTotalExpense = await sheet?.values.value(column: 11, row: 2);
-  return Future.value([personalTotalExpense, 'Personal Expense']);
-}
-
-Future<List> fetchCreditTotal() async {
-  final ss = await gSheetLoader();
-  // get worksheet by its title
-  var sheet = ss.worksheetByTitle('Overall');
-  var creditTotalExpense = await sheet?.values.value(column: 17, row: 2);
-  return Future.value([creditTotalExpense, 'Credit Card Expense']);
-}
-
 
 class CardBasicRoute extends StatefulWidget {
   const CardBasicRoute({super.key});
@@ -66,7 +49,7 @@ class CardBasicRouteState extends State<CardBasicRoute> {
 
   Widget familyExpenseCard() {
     return FutureBuilder(
-      future: fetchFamilyTotal(),
+      future: fetchExpenseTotal(4, 2, 'Family Expense'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
 
@@ -131,7 +114,7 @@ class CardBasicRouteState extends State<CardBasicRoute> {
 
   Widget personalExpenseCard() {
     return FutureBuilder(
-      future: fetchPersonalTotal(),
+      future: fetchExpenseTotal(11, 2, 'Personal Expense'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
 
@@ -194,9 +177,9 @@ class CardBasicRouteState extends State<CardBasicRoute> {
     );
   }
 
-   Widget creditExpenseCard() {
+  Widget creditExpenseCard() {
     return FutureBuilder(
-      future: fetchCreditTotal(),
+      future: fetchExpenseTotal(17, 2, 'Credit Card Expense'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
 
@@ -209,8 +192,8 @@ class CardBasicRouteState extends State<CardBasicRoute> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xff283593),
-                    Color(0xff1976d2),
+                    Color(0xff0c0c0c),
+                    Color.fromARGB(255, 37, 40, 43),
                     Colors.purpleAccent,
                     Colors.amber,
                   ],
