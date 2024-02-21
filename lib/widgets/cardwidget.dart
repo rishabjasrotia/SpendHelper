@@ -63,31 +63,34 @@ class CardBasicRouteState extends State<CardBasicRoute> {
                     // Logic to call the gheet and update the value
                     final ss = await gSheetLoader();
                     var sheet = ss.worksheetByTitle('Overall');
-                    if (expenseType == 'Credit') {
-                      // get the last value column number
-                      var creditDates = await sheet?.values.column(13, fromRow: 2);
-                      var targetRow = creditDates!.length + 2;
-                      await sheet.values.insertValue(date, column: 13, row: targetRow);
-                      await sheet.values.insertValue(description, column: 14, row: targetRow);
-                      await sheet.values.insertValue(amount, column: 15, row: targetRow);
-                      await sheet.values.insertValue('P', column: 16, row: targetRow);
+                    if (date.isNotEmpty && description.isNotEmpty && amount.isNotEmpty && expenseType.isNotEmpty) {
+                      if (expenseType == 'Credit') {
+                        // get the last value column number
+                        var creditDates = await sheet?.values.column(13, fromRow: 2);
+                        var targetRow = creditDates!.length + 2;
+                        await sheet.values.insertValue(date, column: 13, row: targetRow);
+                        await sheet.values.insertValue(description, column: 14, row: targetRow);
+                        await sheet.values.insertValue(amount, column: 15, row: targetRow);
+                        await sheet.values.insertValue('P', column: 16, row: targetRow);
+                      }
+                      if (expenseTypeTextController.text == 'Personal') {
+                        // get the last value column number
+                        var personalDates = await sheet?.values.column(8, fromRow: 2);
+                        var targetRow = personalDates!.length + 2;
+                        await sheet.values.insertValue(date, column: 8, row: targetRow);
+                        await sheet.values.insertValue(description, column: 9, row: targetRow);
+                        await sheet.values.insertValue(amount, column: 10, row: targetRow);
+                      }
+                      if (expenseTypeTextController.text == 'Family') {
+                        // get the last value column number
+                        var familyDates = await sheet?.values.column(1, fromRow: 2);
+                        var targetRow = familyDates!.length + 2;
+                        await sheet.values.insertValue(date, column: 1, row: targetRow);
+                        await sheet.values.insertValue(description, column: 2, row: targetRow);
+                        await sheet.values.insertValue(amount, column: 3, row: targetRow);
+                      }
                     }
-                    if (expenseTypeTextController.text == 'Personal') {
-                      // get the last value column number
-                      var personalDates = await sheet?.values.column(8, fromRow: 2);
-                      var targetRow = personalDates!.length + 2;
-                      await sheet.values.insertValue(date, column: 8, row: targetRow);
-                      await sheet.values.insertValue(description, column: 9, row: targetRow);
-                      await sheet.values.insertValue(amount, column: 10, row: targetRow);
-                    }
-                    if (expenseTypeTextController.text == 'Family') {
-                      // get the last value column number
-                      var familyDates = await sheet?.values.column(1, fromRow: 2);
-                      var targetRow = familyDates!.length + 2;
-                      await sheet.values.insertValue(date, column: 1, row: targetRow);
-                      await sheet.values.insertValue(description, column: 2, row: targetRow);
-                      await sheet.values.insertValue(amount, column: 3, row: targetRow);
-                    }
+                 
 
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       setState(() {
@@ -422,7 +425,7 @@ showLoaderDialog(BuildContext context){
     content: new Row(
       children: [
         CircularProgressIndicator(),
-        Container(margin: EdgeInsets.only(left: 7),child:Text("Loading..." )),
+        Container(margin: EdgeInsets.only(left: 7),child:Text("Updating ..." )),
       ],),
   );
   showDialog(barrierDismissible: false,
