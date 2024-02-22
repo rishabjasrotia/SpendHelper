@@ -142,7 +142,7 @@ class CardBasicRouteState extends State<CardBasicRoute> {
 
   Widget familyExpenseCard() {
     return FutureBuilder(
-        future: fetchExpenseTotal(4, 2, 'Family Expense'),
+        future: fetchExpenseTotal(4, 2, 'Family \nExpense'),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return InkWell(
@@ -206,13 +206,17 @@ class CardBasicRouteState extends State<CardBasicRoute> {
             );
           }
           // By default show a loading spinner.
-          return const CircularProgressIndicator();
+          return SizedBox( 
+            child: CircularProgressIndicator(), 
+            height: 20.0, 
+            width: 200.0, 
+          );
         });
   }
 
   Widget personalExpenseCard() {
     return FutureBuilder(
-        future: fetchExpenseTotal(11, 2, 'Personal Expense'),
+        future: fetchExpenseTotal(11, 2, 'Personal \nExpense'),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return 
@@ -278,13 +282,17 @@ class CardBasicRouteState extends State<CardBasicRoute> {
             
           }
           // By default show a loading spinner.
-          return const CircularProgressIndicator();
+          return SizedBox( 
+            child: CircularProgressIndicator(), 
+            height: 20.0, 
+            width: 200.0, 
+          );
         });
   }
 
   Widget creditExpenseCard() {
     return FutureBuilder(
-        future: fetchExpenseTotal(17, 2, 'Credit Card Expense'),
+        future: fetchExpenseTotal(17, 2, 'Credit Card \nExpense'),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return InkWell(
@@ -348,7 +356,11 @@ class CardBasicRouteState extends State<CardBasicRoute> {
             );
           }
           // By default show a loading spinner.
-          return const CircularProgressIndicator();
+          return SizedBox( 
+            child: CircularProgressIndicator(), 
+            height: 20.0, 
+            width: 200.0, 
+          );
         });
   }
 }
