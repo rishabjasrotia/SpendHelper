@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:spendhelper/drawer/mydrawer.dart';
 import 'package:spendhelper/handler/gsheethandler.dart';
+import 'package:carousel_slider/carousel_slider.dart'; 
 
 double defaultRadius = 8.0;
 const double _cardWidth = 115;
@@ -27,6 +28,7 @@ class CardBasicRouteState extends State<CardBasicRoute> {
   TextEditingController descTextController = TextEditingController();
   TextEditingController amtTextController = TextEditingController();
   TextEditingController expenseTypeTextController = TextEditingController();
+  final CarouselController _controller = CarouselController();
 
   @override
   void initState() {
@@ -119,13 +121,17 @@ class CardBasicRouteState extends State<CardBasicRoute> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8),
         scrollDirection: Axis.vertical,
+
         child: Column(
           children: <Widget>[
-            familyExpenseCard(),
-            Container(height: 10),
-            personalExpenseCard(),
-            Container(height: 10),
-            creditExpenseCard()
+            CarouselSlider(items: [
+                familyExpenseCard(),
+                personalExpenseCard(),
+                creditExpenseCard()
+              ],
+              carouselController: _controller,
+              options: CarouselOptions(enlargeCenterPage: true, height: 200),
+            ),
           ],
         ),
       ),
