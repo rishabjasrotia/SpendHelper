@@ -143,59 +143,64 @@ class CardBasicRouteState extends State<CardBasicRoute> {
         future: fetchExpenseTotal(4, 2, 'Family Expense'),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return Container(
-              height: 150,
-              width: double.infinity,
-              padding: const EdgeInsets.all(32),
-              decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFF846AFF),
-                      Color(0xFF755EE8),
-                      Colors.purpleAccent,
-                      Colors.amber,
-                    ],
-                  ),
-                  borderRadius: radius(16)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(snapshot.data![1],
-                              style: MyTextSample.headline(context)!.copyWith(
-                                  color: Colors.white,
-                                  fontFamily:
-                                      "monospace")), //, style: boldTextStyle(color: Colors.white, size: 20)
-                          const Spacer(),
-                          Stack(
-                            children: List.generate(
-                              2,
-                              (index) => Container(
-                                margin: EdgeInsets.only(
-                                    left: (15 * index).toDouble()),
-                                height: 30,
-                                width: 30,
-                                decoration: BoxDecoration(
-                                    borderRadius: radius(100),
-                                    color: Colors.white54),
+            return InkWell(
+              onTap: () {
+                Navigator.pushReplacementNamed(context, "/familyExpense");
+              },
+              child: Container(
+                height: 150,
+                width: double.infinity,
+                padding: const EdgeInsets.all(32),
+                decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFF846AFF),
+                        Color(0xFF755EE8),
+                        Colors.purpleAccent,
+                        Colors.amber,
+                      ],
+                    ),
+                    borderRadius: radius(16)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(snapshot.data![1],
+                                style: MyTextSample.headline(context)!.copyWith(
+                                    color: Colors.white,
+                                    fontFamily:
+                                        "monospace")), //, style: boldTextStyle(color: Colors.white, size: 20)
+                            const Spacer(),
+                            Stack(
+                              children: List.generate(
+                                2,
+                                (index) => Container(
+                                  margin: EdgeInsets.only(
+                                      left: (15 * index).toDouble()),
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                      borderRadius: radius(100),
+                                      color: Colors.white54),
+                                ),
                               ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                  Text(snapshot.data![0],
-                      style: TextStyle(fontSize: 24, color: Colors.white))
-                ],
-              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    Text(snapshot.data![0],
+                        style: TextStyle(fontSize: 24, color: Colors.white))
+                  ],
+                ),
+              )
             );
           }
           // By default show a loading spinner.
@@ -208,60 +213,67 @@ class CardBasicRouteState extends State<CardBasicRoute> {
         future: fetchExpenseTotal(11, 2, 'Personal Expense'),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return Container(
-              height: 150,
-              width: double.infinity,
-              padding: const EdgeInsets.all(32),
-              decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xff283593),
-                      Color(0xff1976d2),
-                      Colors.purpleAccent,
-                      Colors.amber,
-                    ],
-                  ),
-                  borderRadius: radius(16)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(snapshot.data![1],
-                              style: MyTextSample.headline(context)!.copyWith(
-                                  color: Colors.white,
-                                  fontFamily:
-                                      "monospace")), //, style: boldTextStyle(color: Colors.white, size: 20)
-                          const Spacer(),
-                          Stack(
-                            children: List.generate(
-                              2,
-                              (index) => Container(
-                                margin: EdgeInsets.only(
-                                    left: (15 * index).toDouble()),
-                                height: 30,
-                                width: 30,
-                                decoration: BoxDecoration(
-                                    borderRadius: radius(100),
-                                    color: Colors.white54),
+            return 
+            InkWell(
+              onTap: () {
+                Navigator.pushReplacementNamed(context, "/personalExpense");
+              },
+              child:  Container(
+                height: 150,
+                width: double.infinity,
+                padding: const EdgeInsets.all(32),
+                decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xff283593),
+                        Color(0xff1976d2),
+                        Colors.purpleAccent,
+                        Colors.amber,
+                      ],
+                    ),
+                    borderRadius: radius(16)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(snapshot.data![1],
+                                style: MyTextSample.headline(context)!.copyWith(
+                                    color: Colors.white,
+                                    fontFamily:
+                                        "monospace")), //, style: boldTextStyle(color: Colors.white, size: 20)
+                            const Spacer(),
+                            Stack(
+                              children: List.generate(
+                                2,
+                                (index) => Container(
+                                  margin: EdgeInsets.only(
+                                      left: (15 * index).toDouble()),
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                      borderRadius: radius(100),
+                                      color: Colors.white54),
+                                ),
                               ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                  Text(snapshot.data![0],
-                      style: TextStyle(fontSize: 24, color: Colors.white))
-                ],
-              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    Text(snapshot.data![0],
+                        style: TextStyle(fontSize: 24, color: Colors.white))
+                  ],
+                ),
+              )
             );
+            
           }
           // By default show a loading spinner.
           return const CircularProgressIndicator();
@@ -273,59 +285,64 @@ class CardBasicRouteState extends State<CardBasicRoute> {
         future: fetchExpenseTotal(17, 2, 'Credit Card Expense'),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return Container(
-              height: 150,
-              width: double.infinity,
-              padding: const EdgeInsets.all(32),
-              decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xff0c0c0c),
-                      Color.fromARGB(255, 37, 40, 43),
-                      Colors.purpleAccent,
-                      Colors.amber,
-                    ],
-                  ),
-                  borderRadius: radius(16)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(snapshot.data![1],
-                              style: MyTextSample.headline(context)!.copyWith(
-                                  color: Colors.white,
-                                  fontFamily:
-                                      "monospace")), //, style: boldTextStyle(color: Colors.white, size: 20)
-                          const Spacer(),
-                          Stack(
-                            children: List.generate(
-                              2,
-                              (index) => Container(
-                                margin: EdgeInsets.only(
-                                    left: (15 * index).toDouble()),
-                                height: 30,
-                                width: 30,
-                                decoration: BoxDecoration(
-                                    borderRadius: radius(100),
-                                    color: Colors.white54),
+            return InkWell(
+              onTap: () {
+                Navigator.pushReplacementNamed(context, "/creditExpense");
+              },
+              child: Container(
+                height: 150,
+                width: double.infinity,
+                padding: const EdgeInsets.all(32),
+                decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xff0c0c0c),
+                        Color.fromARGB(255, 37, 40, 43),
+                        Colors.purpleAccent,
+                        Colors.amber,
+                      ],
+                    ),
+                    borderRadius: radius(16)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(snapshot.data![1],
+                                style: MyTextSample.headline(context)!.copyWith(
+                                    color: Colors.white,
+                                    fontFamily:
+                                        "monospace")), //, style: boldTextStyle(color: Colors.white, size: 20)
+                            const Spacer(),
+                            Stack(
+                              children: List.generate(
+                                2,
+                                (index) => Container(
+                                  margin: EdgeInsets.only(
+                                      left: (15 * index).toDouble()),
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                      borderRadius: radius(100),
+                                      color: Colors.white54),
+                                ),
                               ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                  Text(snapshot.data![0],
-                      style: TextStyle(fontSize: 24, color: Colors.white))
-                ],
-              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    Text(snapshot.data![0],
+                        style: TextStyle(fontSize: 24, color: Colors.white))
+                  ],
+                ),
+              )
             );
           }
           // By default show a loading spinner.
