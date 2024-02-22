@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spendhelper/src/gsheets.dart';
 import 'package:spendhelper/drawer/mydrawer.dart';
+import 'package:spendhelper/drawer/bottomnavigation.dart';
 import 'package:spendhelper/handler/gsheethandler.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:async';
@@ -63,6 +64,7 @@ class CreditExpense extends StatelessWidget {
           title: const Text('Credit Expense List'),
         ),
         drawer: MyDrawer("Credit"),
+        bottomNavigationBar: BottomNavigation("Credit"),
         body: const MyStatefulWidget());
   }
 }
