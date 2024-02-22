@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:spendhelper/handler/dbmanager.dart';
 import 'package:spendhelper/drawer/mydrawer.dart';
+import 'package:spendhelper/drawer/bottomnavigation.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -30,6 +31,7 @@ class _SettingPageState extends State<SettingPage> {
         title: Text('Settings'),
       ),
       drawer: MyDrawer("Settings"),
+      bottomNavigationBar: BottomNavigation("Settings"),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
