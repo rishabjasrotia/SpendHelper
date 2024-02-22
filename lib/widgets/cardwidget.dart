@@ -42,7 +42,7 @@ class CardBasicRouteState extends State<CardBasicRoute> {
         title: const Text('Home'),
       ),
       drawer: MyDrawer("Home"),
-      bottomNavigationBar: BottomNavigation("Home"),
+      bottomNavigationBar: BottomNavigation(0),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
