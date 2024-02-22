@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spendhelper/src/gsheets.dart';
 import 'package:spendhelper/drawer/mydrawer.dart';
+import 'package:spendhelper/drawer/bottomnavigation.dart';
 import 'package:spendhelper/handler/gsheethandler.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:async';
@@ -59,6 +60,7 @@ class FamilyExpense extends StatelessWidget {
           title: const Text('Family Expense List'),
         ),
         drawer: MyDrawer("Family"),
+        bottomNavigationBar: BottomNavigation("Family"),
         body: const MyStatefulWidget());
   }
 }
