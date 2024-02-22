@@ -60,7 +60,7 @@ class FamilyExpense extends StatelessWidget {
           title: const Text('Family Expense List'),
         ),
         drawer: MyDrawer("Family"),
-        bottomNavigationBar: BottomNavigation("Family"),
+        bottomNavigationBar: BottomNavigation(2),
         body: const MyStatefulWidget());
   }
 }
