@@ -31,7 +31,7 @@ class _SettingPageState extends State<SettingPage> {
         title: Text('Settings'),
       ),
       drawer: MyDrawer("Settings"),
-      bottomNavigationBar: BottomNavigation("Settings"),
+      bottomNavigationBar: BottomNavigation(4),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
