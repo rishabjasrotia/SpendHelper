@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:spendhelper/drawer/mydrawer.dart';
+import 'package:spendhelper/drawer/bottomnavigation.dart';
 import 'package:spendhelper/handler/gsheethandler.dart';
 import 'package:carousel_slider/carousel_slider.dart'; 
 
@@ -41,6 +42,7 @@ class CardBasicRouteState extends State<CardBasicRoute> {
         title: const Text('Home'),
       ),
       drawer: MyDrawer("Home"),
+      bottomNavigationBar: BottomNavigation("Home"),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
