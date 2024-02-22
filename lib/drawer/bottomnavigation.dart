@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 class BottomNavigation extends StatelessWidget {
   BottomNavigation(this.currentPage);
 
-  final String currentPage;
-  
+  final int currentPage;
+
   @override
   Widget build(BuildContext context){
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       backgroundColor: Color(0xFF6200EE),
       selectedItemColor: Colors.white,
+      currentIndex: this.currentPage, 
       unselectedItemColor: Colors.white.withOpacity(.60),
       selectedFontSize: 14,
       unselectedFontSize: 14,
