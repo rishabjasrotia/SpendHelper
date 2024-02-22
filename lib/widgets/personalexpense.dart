@@ -60,7 +60,7 @@ class PersonalExpense extends StatelessWidget {
           title: const Text('Personal Expense List'),
         ),
         drawer: MyDrawer("Personal"),
-        bottomNavigationBar: BottomNavigation("Personal"),
+        bottomNavigationBar: BottomNavigation(1),
         body: const MyStatefulWidget());
   }
 }
