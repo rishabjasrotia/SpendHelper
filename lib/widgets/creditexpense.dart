@@ -64,7 +64,7 @@ class CreditExpense extends StatelessWidget {
           title: const Text('Credit Expense List'),
         ),
         drawer: MyDrawer("Credit"),
-        bottomNavigationBar: BottomNavigation("Credit"),
+        bottomNavigationBar: BottomNavigation(3),
         body: const MyStatefulWidget());
   }
 }
