@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spendhelper/src/gsheets.dart';
+import 'package:spendhelper/widgets/bankingdetails.dart';
 import 'package:spendhelper/widgets/cardwidget.dart';
 import 'package:spendhelper/widgets/creditexpense.dart';
 import 'package:spendhelper/widgets/familyexpense.dart';
@@ -41,6 +42,7 @@ class MainApp extends StatelessWidget {
         '/familyExpense': (context) => const FamilyExpense(),
         '/home': (context) => const CardBasicRoute(),
         '/settings': (context) =>  SettingPage(),
+        '/banking': (context) =>  const BankingRoute(),
       },
     );
   }
