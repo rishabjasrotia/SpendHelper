@@ -1,0 +1,373 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:spendhelper/drawer/mydrawer.dart';
+import 'package:spendhelper/drawer/bottomnavigation.dart';
+import 'package:spendhelper/handler/gsheethandler.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
+double defaultRadius = 8.0;
+const double _cardWidth = 115;
+const double _banksCount = 4;
+
+Future<Map> fetchBankDetails() async {
+  final ss = await gSheetLoader();
+  var sheet = ss.worksheetByTitle('Overall');
+  const startcolumn = 29;
+  var row = 1;
+  var bankDetails = {};
+  var bankDates = await sheet?.values.column(28, fromRow: 2);
+  var lastRow = bankDates!.length + 1;
+
+  for (int i = 0; i < _banksCount; i++) {
+    var column = startcolumn + i;
+    var bankName = await sheet?.values.value(column: column, row: row);
+    var currentBal = await sheet?.values.value(column: column, row: lastRow);
+    bankDetails[bankName] = currentBal;
+  }
+  // print(bankDetails);
+  // if (key.isNotEmpty() && key != '') {
+  //   return Future.value(bankDetails[key]);
+  // }
+  // // get worksheet by its title
+  return Future.value(bankDetails);
+}
+
+class BankingRoute extends StatefulWidget {
+  const BankingRoute({super.key});
+
+  @override
+  BankingRouteRouteState createState() => BankingRouteRouteState();
+}
+
+class BankingRouteRouteState extends State<BankingRoute> {
+  @override
+  TextEditingController bankNameTextController = TextEditingController();
+  TextEditingController bankBalTextController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Bank Details'),
+      ),
+      drawer: MyDrawer("Bank"),
+      bottomNavigationBar: BottomNavigation(4),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(8),
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: double.maxFinite,
+              child: personalExpenseCard(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget personalExpenseCard() {
+    return FutureBuilder(
+        future: fetchBankDetails(),
+        builder: (context, snapshot) {
+          print(snapshot.hasData);
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [Container(height: 25), getInkWell(snapshot.data, index)],
+                );
+              },
+            );
+          }
+          // By default show a loading spinner.
+          return SizedBox(
+            child: CircularProgressIndicator(),
+            height: 20.0,
+            width: 200.0,
+          );
+        });
+  }
+
+  getInkWell(data, index) {
+    final bankName = data.keys.elementAt(index);
+    final currentBalance = data[bankName];
+
+    return InkWell(
+      onTap: () {
+        updateBankDetails(index, bankName, currentBalance);
+      },
+      child: Container(
+        height: 150,
+        width: double.infinity,
+        padding: const EdgeInsets.all(32),
+        decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xff283593),
+                Color(0xff1976d2),
+                Colors.purpleAccent,
+                Colors.amber,
+              ],
+            ),
+            borderRadius: radius(16)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(bankName,
+                        style: MyTextSample.headline(context)!.copyWith(
+                            color: Colors.white,
+                            fontFamily:
+                                "monospace")), //, style: boldTextStyle(color: Colors.white, size: 20)
+                    const Spacer(),
+                    Stack(
+                      children: List.generate(
+                        2,
+                        (index) => Container(
+                          margin:
+                              EdgeInsets.only(left: (15 * index).toDouble()),
+                          height: 30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                              borderRadius: radius(100), color: Colors.white54),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+            Text(currentBalance,
+                style: TextStyle(fontSize: 24, color: Colors.white))
+          ],
+        ),
+      ),
+    );
+  }
+
+  updateBankDetails(index, bankName, currentBalance) {
+    bankBalTextController.text = currentBalance;
+    showDialog(
+    context: context,
+    builder: (context) {
+      return DialogBox().dialog(
+        context: context,
+        onPressed: () async {
+          // Model model = new Model(
+          //     key: nameTextController.text, value: ageTextController.text);
+          // int? id =   await dbManager.insertData(model) ;
+          // print("data inserted  ${id}" );
+          var date = bankNameTextController.text;
+          var description = bankBalTextController.text;
+          // var amount = amtTextController.text;
+          // var expenseType = expenseTypeTextController.text;
+          showLoaderDialog(context);
+          // print(date);
+          // print(description);
+          // print(amount);
+          // print(expenseType);
+          // Logic to call the gheet and update the value
+          final ss = await gSheetLoader();
+          var sheet = ss.worksheetByTitle('Overall');
+          if (date.isNotEmpty &&
+              description.isNotEmpty ) {
+          
+          }
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            setState(() {
+              bankNameTextController.text = "";
+              bankBalTextController.text = "";
+
+            });
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+          });
+        },
+        textEditingController1: bankNameTextController,
+        textEditingController2: bankBalTextController,
+        index: index,
+        bankName: bankName,
+        currentBalance: currentBalance
+      );
+    });
+  }
+}
+
+/// returns Radius
+BorderRadius radius([double? radius]) {
+  return BorderRadius.all(radiusCircular(radius ?? defaultRadius));
+}
+
+/// returns Radius
+Radius radiusCircular([double? radius]) {
+  return Radius.circular(radius ?? defaultRadius);
+}
+
+class MyColorsSample {
+  static const Color primary = Color(0xFF12376F);
+  static const Color primaryDark = Color(0xFF0C44A3);
+  static const Color primaryLight = Color(0xFF43A3F3);
+  static const Color green = Colors.green;
+  static Color black = const Color(0xFF000000);
+  static const Color accent = Color(0xFFFF4081);
+  static const Color accentDark = Color(0xFFF50057);
+  static const Color accentLight = Color(0xFFFF80AB);
+  static const Color grey_3 = Color(0xFFf7f7f7);
+  static const Color grey_5 = Color(0xFFf2f2f2);
+  static const Color grey_10 = Color(0xFFe6e6e6);
+  static const Color grey_20 = Color(0xFFcccccc);
+  static const Color grey_40 = Color(0xFF999999);
+  static const Color grey_60 = Color(0xFF666666);
+  static const Color grey_80 = Color(0xFF37474F);
+  static const Color grey_90 = Color(0xFF263238);
+  static const Color grey_95 = Color(0xFF1a1a1a);
+  static const Color grey_100_ = Color(0xFF0d0d0d);
+  static const Color transparent = Color(0x00f7f7f7);
+}
+
+class MyTextSample {
+  static TextStyle? display4(BuildContext context) {
+    return Theme.of(context).textTheme.displayLarge;
+  }
+
+  static TextStyle? display3(BuildContext context) {
+    return Theme.of(context).textTheme.displayMedium;
+  }
+
+  static TextStyle? display2(BuildContext context) {
+    return Theme.of(context).textTheme.displaySmall;
+  }
+
+  static TextStyle? display1(BuildContext context) {
+    return Theme.of(context).textTheme.headlineMedium;
+  }
+
+  static TextStyle? headline(BuildContext context) {
+    return Theme.of(context).textTheme.headlineSmall;
+  }
+
+  static TextStyle? title(BuildContext context) {
+    return Theme.of(context).textTheme.titleLarge;
+  }
+
+  static TextStyle medium(BuildContext context) {
+    return Theme.of(context).textTheme.titleMedium!.copyWith(
+          fontSize: 18,
+        );
+  }
+
+  static TextStyle? subhead(BuildContext context) {
+    return Theme.of(context).textTheme.titleMedium;
+  }
+
+  static TextStyle? body2(BuildContext context) {
+    return Theme.of(context).textTheme.bodyLarge;
+  }
+
+  static TextStyle? body1(BuildContext context) {
+    return Theme.of(context).textTheme.bodyMedium;
+  }
+
+  static TextStyle? caption(BuildContext context) {
+    return Theme.of(context).textTheme.bodySmall;
+  }
+
+  static TextStyle? button(BuildContext context) {
+    return Theme.of(context).textTheme.labelLarge!.copyWith(letterSpacing: 1);
+  }
+
+  static TextStyle? subtitle(BuildContext context) {
+    return Theme.of(context).textTheme.titleSmall;
+  }
+
+  static TextStyle? overline(BuildContext context) {
+    return Theme.of(context).textTheme.labelSmall;
+  }
+}
+
+showLoaderDialog(BuildContext context) {
+  AlertDialog alert = AlertDialog(
+    content: new Row(
+      children: [
+        CircularProgressIndicator(),
+        Container(
+            margin: EdgeInsets.only(left: 7), child: Text("Updating ...")),
+      ],
+    ),
+  );
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+class DialogBox {
+  Widget dialog({
+    BuildContext? context,
+    Function? onPressed,
+    TextEditingController? textEditingController1,
+    TextEditingController? textEditingController2,
+    index, 
+    bankName, 
+    currentBalance
+  }) {
+    return AlertDialog(
+      title: Text("Update Bank Details"),
+      content: Container(
+        height: 200,
+        child: Column(
+          children: [
+            TextFormField(
+                controller: textEditingController1,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(hintText: bankName),
+                readOnly: true,
+                onFieldSubmitted: (value) {}),
+            TextFormField(
+              controller: textEditingController2,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(hintText: currentBalance),
+              onFieldSubmitted: (value) {},
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        MaterialButton(
+          onPressed: () {
+            Navigator.of(context!).pop();
+          },
+          color: Colors.blue,
+          child: Text(
+            "Cancel",
+          ),
+        ),
+        MaterialButton(
+          onPressed: () {
+            onPressed!();
+          },
+          child: Text("Save"),
+          color: Colors.blue,
+        )
+      ],
+    );
+  }
+}
