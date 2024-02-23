@@ -4,6 +4,7 @@ import 'package:spendhelper/drawer/mydrawer.dart';
 import 'package:spendhelper/drawer/bottomnavigation.dart';
 import 'package:spendhelper/handler/gsheethandler.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/intl.dart';
 import 'dart:async';
 
 Future<List<Data>> fetchData() async {
@@ -25,7 +26,7 @@ Future<List<Data>> fetchData() async {
     // TO DO
     var internal = {
       'date':
-          epoch.add(new Duration(days: int.parse(personalDates[i]))).toString(),
+          DateFormat('MM/dd/yyyy').format(epoch.add(new Duration(days: int.parse(personalDates[i])))).toString(),
       'desc': personalDescription?[i],
       'amt': personalAmount?[i],
     };
