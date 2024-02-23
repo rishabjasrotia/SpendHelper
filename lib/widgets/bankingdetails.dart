@@ -360,9 +360,9 @@ class DialogBox {
     currentBalance
   }) {
     return AlertDialog(
-      title: Text("Update Bank Details"),
+      title: Text("Update Bank Balance"),
       content: Container(
-        height: 200,
+        height: 100,
         child: Column(
           children: [
             TextFormField(
@@ -395,7 +395,7 @@ class DialogBox {
           onPressed: () {
             onPressed!();
           },
-          child: Text("Save"),
+          child: Text("Update"),
           color: Colors.blue,
         )
       ],
