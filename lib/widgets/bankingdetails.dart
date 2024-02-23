@@ -4,6 +4,7 @@ import 'package:spendhelper/drawer/mydrawer.dart';
 import 'package:spendhelper/drawer/bottomnavigation.dart';
 import 'package:spendhelper/handler/gsheethandler.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:intl/intl.dart';
 
 double defaultRadius = 8.0;
 const double _cardWidth = 115;
@@ -24,12 +25,47 @@ Future<Map> fetchBankDetails() async {
     var currentBal = await sheet?.values.value(column: column, row: lastRow);
     bankDetails[bankName] = currentBal;
   }
-  // print(bankDetails);
-  // if (key.isNotEmpty() && key != '') {
-  //   return Future.value(bankDetails[key]);
-  // }
-  // // get worksheet by its title
+
   return Future.value(bankDetails);
+}
+
+updateGsheetBankDetails(data, bankIndex, bankName, bankBalance) async {
+  final ss = await gSheetLoader();
+  var sheet = ss.worksheetByTitle('Overall');
+  const startcolumn = 29;
+  var bankDates = await sheet?.values.column(28, fromRow: 2);
+  var lastRow = bankDates!.length + 1;
+  var lastDate = bankDates[bankDates.length - 1];
+
+  //Google Data to Epoch base conversion
+  var epoch = new DateTime(1899, 12, 30);
+  lastDate = DateFormat('MM/dd/yyyy').format(epoch.add(new Duration(days: int.parse(lastDate)))).toString();
+
+  // Current Date
+  DateTime now = new DateTime.now();
+  var currentDate = DateFormat('MM/dd/yyyy').format(new DateTime(now.year, now.month, now.day)).toString();
+  if (currentDate == lastDate) {
+    lastRow = lastRow;
+  }else {
+    lastRow = lastRow + 1;
+  }
+
+  //Update Data field with new balance
+  data[bankName] = bankBalance.toString();
+  final updateData = data.values.toList(); 
+  await sheet.values.insertValue(currentDate, column: (startcolumn - 1), row: lastRow);
+  // Update Gsheet with bank balance
+  var column = 0;
+  for (int i = 0; i < updateData.length; i++) {
+    column = startcolumn + i;
+    await sheet.values.insertValue(updateData[i], column: column, row: lastRow);
+  }
+
+  // Update the Total Field also.
+  column = column + 1;
+  var formulaVal = '=SUM(AC' + lastRow.toString() + '+AD' + lastRow.toString() + '+AE' + lastRow.toString() + '+AF' + lastRow.toString() + ')';
+  await sheet.values.insertValue(formulaVal, column: column, row: lastRow);
+
 }
 
 class BankingRoute extends StatefulWidget {
@@ -43,6 +79,7 @@ class BankingRouteRouteState extends State<BankingRoute> {
   @override
   TextEditingController bankNameTextController = TextEditingController();
   TextEditingController bankBalTextController = TextEditingController();
+  TextEditingController bankIndexTextController = TextEditingController();
 
   @override
   void initState() {
@@ -75,7 +112,6 @@ class BankingRouteRouteState extends State<BankingRoute> {
     return FutureBuilder(
         future: fetchBankDetails(),
         builder: (context, snapshot) {
-          print(snapshot.hasData);
           if (snapshot.hasData) {
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -101,7 +137,7 @@ class BankingRouteRouteState extends State<BankingRoute> {
 
     return InkWell(
       onTap: () {
-        updateBankDetails(index, bankName, currentBalance);
+        updateBankDetails(data, index, bankName, currentBalance);
       },
       child: Container(
         height: 150,
@@ -159,39 +195,31 @@ class BankingRouteRouteState extends State<BankingRoute> {
     );
   }
 
-  updateBankDetails(index, bankName, currentBalance) {
+  updateBankDetails(data, index, bankName, currentBalance) {
     bankBalTextController.text = currentBalance;
+    bankIndexTextController.text = index.toString();
+    bankNameTextController.text = bankName;
     showDialog(
     context: context,
     builder: (context) {
       return DialogBox().dialog(
         context: context,
         onPressed: () async {
-          // Model model = new Model(
-          //     key: nameTextController.text, value: ageTextController.text);
-          // int? id =   await dbManager.insertData(model) ;
-          // print("data inserted  ${id}" );
-          var date = bankNameTextController.text;
-          var description = bankBalTextController.text;
-          // var amount = amtTextController.text;
-          // var expenseType = expenseTypeTextController.text;
+          var bankName = bankNameTextController.text;
+          var bankBalance = bankBalTextController.text;
+          var bankIndex = bankIndexTextController.text;
           showLoaderDialog(context);
-          // print(date);
-          // print(description);
-          // print(amount);
-          // print(expenseType);
+
           // Logic to call the gheet and update the value
+          updateGsheetBankDetails(data, bankIndex, bankName, bankBalance);
           final ss = await gSheetLoader();
           var sheet = ss.worksheetByTitle('Overall');
-          if (date.isNotEmpty &&
-              description.isNotEmpty ) {
-          
-          }
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             setState(() {
               bankNameTextController.text = "";
               bankBalTextController.text = "";
+              bankIndexTextController.text = "";
 
             });
             Navigator.of(context).pop();
@@ -200,6 +228,7 @@ class BankingRouteRouteState extends State<BankingRoute> {
         },
         textEditingController1: bankNameTextController,
         textEditingController2: bankBalTextController,
+        textEditingController3: bankIndexTextController,
         index: index,
         bankName: bankName,
         currentBalance: currentBalance
@@ -325,6 +354,7 @@ class DialogBox {
     Function? onPressed,
     TextEditingController? textEditingController1,
     TextEditingController? textEditingController2,
+    TextEditingController? textEditingController3,
     index, 
     bankName, 
     currentBalance
@@ -340,7 +370,8 @@ class DialogBox {
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(hintText: bankName),
                 readOnly: true,
-                onFieldSubmitted: (value) {}),
+                onFieldSubmitted: (value) {}
+            ),
             TextFormField(
               controller: textEditingController2,
               keyboardType: TextInputType.text,
