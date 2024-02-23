@@ -81,7 +81,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         if (snapshot.hasData) {
           return SingleChildScrollView(
             child: DataTable(
-              border: TableBorder.all(width: 1),
               columnSpacing: 30,
               columns: const [
                 DataColumn(label: Text('Date'), numeric: true),
