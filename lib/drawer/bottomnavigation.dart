@@ -36,6 +36,10 @@ class BottomNavigation extends StatelessWidget {
           label: 'Credit',
           icon: Icon(Icons.credit_card),
         ),
+        BottomNavigationBarItem(
+          label: 'Bank',
+          icon: Icon(Icons.account_balance),
+        ),
       ],
     );
   }
@@ -57,7 +61,10 @@ void selectedItem(BuildContext context, int index) {
       Navigator.pushReplacementNamed(context, "/creditExpense");
       break;
     case 4:
-      Navigator.pushReplacementNamed(context, "/settings");
+      Navigator.pushReplacementNamed(context, "/banking");
+      break;
+    case 5:
+      Navigator.pushReplacementNamed(context, "/banking");
       break;
   }
 }
