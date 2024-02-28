@@ -100,7 +100,7 @@ class BankingRouteRouteState extends State<BankingRoute> {
           children: <Widget>[
             Container(
               height: double.maxFinite,
-              child: personalExpenseCard(),
+              child: bankingDetails(),
             ),
           ],
         ),
@@ -108,10 +108,11 @@ class BankingRouteRouteState extends State<BankingRoute> {
     );
   }
 
-  Widget personalExpenseCard() {
+  Widget bankingDetails() {
     return FutureBuilder(
         future: fetchBankDetails(),
         builder: (context, snapshot) {
+          print(snapshot.hasData);
           if (snapshot.hasData) {
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -123,11 +124,7 @@ class BankingRouteRouteState extends State<BankingRoute> {
             );
           }
           // By default show a loading spinner.
-          return SizedBox(
-            child: CircularProgressIndicator(),
-            height: 20.0,
-            width: 200.0,
-          );
+          return const CircularProgressIndicator();
         });
   }
 
