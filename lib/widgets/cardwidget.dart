@@ -4,6 +4,7 @@ import 'package:spendhelper/drawer/mydrawer.dart';
 import 'package:spendhelper/drawer/bottomnavigation.dart';
 import 'package:spendhelper/handler/gsheethandler.dart';
 import 'package:carousel_slider/carousel_slider.dart'; 
+import 'package:intl/intl.dart';
 
 double defaultRadius = 8.0;
 const double _cardWidth = 115;
@@ -37,6 +38,10 @@ class CardBasicRouteState extends State<CardBasicRoute> {
   }
  
   Widget build(BuildContext context) {
+    DateTime now = new DateTime.now();
+    var formatter = new DateFormat('MM/dd/yyyy');
+    String currentDate = formatter.format(now);
+    dateTextController.text = currentDate;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
