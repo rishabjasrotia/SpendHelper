@@ -1,3 +1,4 @@
+import 'dart:js_interop';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:spendhelper/drawer/mydrawer.dart';
@@ -8,14 +9,77 @@ import 'package:intl/intl.dart';
 
 double defaultRadius = 8.0;
 const double _cardWidth = 115;
+const double _banksCount = 4;
+const bankStartColumn = 29;
+var bankDetails = {};
+var bankCall = 0;
 
 Future<List> fetchExpenseTotal(column, row, name) async {
   final ss = await gSheetLoader();
   // get worksheet by its title
   var sheet = ss.worksheetByTitle('Overall');
   var creditTotalExpense = await sheet?.values.valueRound(column: column, row: row);
+
+  // update bank details 
+  if (bankDetails.isEmpty && bankCall < 1) {
+    bankDetails = await fetchBankDetails(sheet);
+    bankCall++;
+  }
   return Future.value([creditTotalExpense, name]);
 }
+
+fetchBankDetails(sheet) async {
+  var row = 1;
+  var bankDates = await sheet?.values.column(28, fromRow: 2);
+  var lastRow = bankDates!.length + 1;
+  for (int i = 0; i < _banksCount; i++) {
+    var column = bankStartColumn + i;
+    var bankName = await sheet?.values.value(column: column, row: row);
+    var currentBal = await sheet?.values.value(column: column, row: lastRow);
+    bankDetails[bankName.toString()] = currentBal;
+  }
+  return bankDetails;
+}
+
+updateGsheetBankDetails(data, bankName, bankBalance) async {
+  final ss = await gSheetLoader();
+  var sheet = ss.worksheetByTitle('Overall');
+  const startcolumn = 29;
+  var bankDates = await sheet?.values.column(28, fromRow: 2);
+  var lastRow = bankDates!.length + 1;
+  var lastDate = bankDates[bankDates.length - 1];
+
+  //Google Data to Epoch base conversion
+  var epoch = new DateTime(1899, 12, 30);
+  lastDate = DateFormat('MM/dd/yyyy').format(epoch.add(new Duration(days: int.parse(lastDate)))).toString();
+
+  // Current Date
+  DateTime now = new DateTime.now();
+  var currentDate = DateFormat('MM/dd/yyyy').format(new DateTime(now.year, now.month, now.day)).toString();
+  if (currentDate == lastDate) {
+    lastRow = lastRow;
+  }else {
+    lastRow = lastRow + 1;
+  }
+
+  //Update Data field with new balance
+  data[bankName] = bankBalance.toString();
+  final updateData = data.values.toList(); 
+  await sheet.values.insertValue(currentDate, column: (startcolumn - 1), row: lastRow);
+  // Update Gsheet with bank balance
+  var column = 0;
+  for (int i = 0; i < updateData.length; i++) {
+    column = startcolumn + i;
+    await sheet.values.insertValue(updateData[i], column: column, row: lastRow);
+  }
+
+  // Update the Total Field also.
+  column = column + 1;
+  var formulaVal = '=SUM(AC' + lastRow.toString() + '+AD' + lastRow.toString() + '+AE' + lastRow.toString() + '+AF' + lastRow.toString() + ')';
+  await sheet.values.insertValue(formulaVal, column: column, row: lastRow);
+
+}
+
 
 class CardBasicRoute extends StatefulWidget {
   const CardBasicRoute({super.key});
@@ -30,6 +94,7 @@ class CardBasicRouteState extends State<CardBasicRoute> {
   TextEditingController descTextController = TextEditingController();
   TextEditingController amtTextController = TextEditingController();
   TextEditingController expenseTypeTextController = TextEditingController();
+  TextEditingController bankTypeTextController = TextEditingController();
   final CarouselController _controller = CarouselController();
 
   @override
@@ -49,27 +114,45 @@ class CardBasicRouteState extends State<CardBasicRoute> {
       drawer: MyDrawer("Home"),
       bottomNavigationBar: BottomNavigation(0),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
+          var bankData = bankDetails;
           showDialog(
               context: context,
               builder: (context) {
                 return DialogBox().dialog(
                   context: context,
+                  bankData: bankData,
                   onPressed: () async {
-                    // Model model = new Model(
-                    //     key: nameTextController.text, value: ageTextController.text);
-                    // int? id =   await dbManager.insertData(model) ;
-                    // print("data inserted  ${id}" );
+
                     var date = dateTextController.text;
                     var description = descTextController.text;
                     var amount = amtTextController.text;
                     var expenseType = expenseTypeTextController.text;
+                    var bank = bankTypeTextController.text;
+                    double updatedBal = 0.0;
+                    
+                    if (bank.isNotEmpty) {
+                      var currentBal = '';
+                      int i =0;
+                      var bankUpdateColumn = bankStartColumn;
+                      for (var entry in bankData.entries) {
+                        bankUpdateColumn = bankStartColumn + i;
+                        if (entry.key == bank) {
+                          currentBal = entry.value;
+                          updatedBal = double.parse(entry.value) - double.parse(amount);
+                          break;
+                        }
+                        i++;
+                      }
+                    }
+                
+
                     showLoaderDialog(context);
                     // print(date);
                     // print(description);
                     // print(amount);
                     // print(expenseType);
-                    // Logic to call the gheet and update the value
+                    // Logic to call the gheet and update the value  
                     final ss = await gSheetLoader();
                     var sheet = ss.worksheetByTitle('Overall');
                     if (date.isNotEmpty && description.isNotEmpty && amount.isNotEmpty && expenseType.isNotEmpty) {
@@ -89,6 +172,9 @@ class CardBasicRouteState extends State<CardBasicRoute> {
                         await sheet.values.insertValue(date, column: 8, row: targetRow);
                         await sheet.values.insertValue(description, column: 9, row: targetRow);
                         await sheet.values.insertValue(amount, column: 10, row: targetRow);
+                        if (bank.isNotEmpty) {
+                          updateGsheetBankDetails(bankData, bank.toString(), updatedBal);
+                        }
                       }
                       if (expenseTypeTextController.text == 'Family') {
                         // get the last value column number
@@ -97,16 +183,19 @@ class CardBasicRouteState extends State<CardBasicRoute> {
                         await sheet.values.insertValue(date, column: 1, row: targetRow);
                         await sheet.values.insertValue(description, column: 2, row: targetRow);
                         await sheet.values.insertValue(amount, column: 3, row: targetRow);
+                        if (bank.isNotEmpty) {
+                          updateGsheetBankDetails(bankData, bank.toString(), updatedBal);
+                        }
                       }
                     }
-                 
-
+                    
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       setState(() {
                         dateTextController.text = "";
                         descTextController.text = "";
                         amtTextController.text = "";
                         expenseTypeTextController.text = "";
+                        bankTypeTextController.text = "";
                       });
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
@@ -116,6 +205,7 @@ class CardBasicRouteState extends State<CardBasicRoute> {
                   textEditingController2: descTextController,
                   textEditingController3: amtTextController,
                   textEditingController4: expenseTypeTextController,
+                  textEditingController5: bankTypeTextController,
                 );
               });
         }
@@ -482,15 +572,17 @@ class DialogBox  {
   Widget dialog({
     BuildContext? context,
     Function? onPressed,
+    bankData,
     TextEditingController? textEditingController1,
     TextEditingController? textEditingController2,
     TextEditingController? textEditingController3,
     TextEditingController? textEditingController4,
+    TextEditingController? textEditingController5,
   }) {
     return AlertDialog(
       title: Text("Enter Expense Details"),
       content: Container(
-        height: 200,
+        height: 250,
         child: Column(
           children: [
             TextFormField(
@@ -511,30 +603,50 @@ class DialogBox  {
               decoration: InputDecoration(hintText: "Enter Amount"),
               onFieldSubmitted: (value) {},
             ),
-           TextField(
-              controller: textEditingController4,
-              decoration: InputDecoration(
-                hintText:'Select Expense Type',
-                suffixIcon: PopupMenuButton<String>(
-                  icon: const Icon(Icons.arrow_drop_down),
-                  onSelected: (String value) {
-                    textEditingController4?.text = value;
-                  },
-                  itemBuilder: (BuildContext context) {
-                    var items = [
-                      'Family',
-                      'Credit',
-                      'Personal'
-                    ];
-                    return items
-                        .map<PopupMenuItem<String>>((String value) {
-                      return new PopupMenuItem(
-                          child: new Text(value), value: value);
-                    }).toList();
-                  },
+            TextField(
+                controller: textEditingController4,
+                decoration: InputDecoration(
+                  hintText:'Select Expense Type',
+                  suffixIcon: PopupMenuButton<String>(
+                    icon: const Icon(Icons.arrow_drop_down),
+                    onSelected: (String value) {
+                      textEditingController4?.text = value;
+                    },
+                    itemBuilder: (BuildContext context) {
+                      var items = [
+                        'Family',
+                        'Credit',
+                        'Personal'
+                      ];
+                      return items
+                          .map<PopupMenuItem<String>>((String value) {
+                        return new PopupMenuItem(
+                            child: new Text(value), value: value);
+                      }).toList();
+                    },
+                  ),
                 ),
               ),
-            )
+              TextField(
+                controller: textEditingController5,
+                decoration: InputDecoration(
+                  hintText:'Select Bank',
+                  suffixIcon: PopupMenuButton<String>(
+                    icon: const Icon(Icons.arrow_drop_down),
+                    onSelected: (String value) {
+                      textEditingController5?.text = value;
+                    },
+                    itemBuilder: (BuildContext context) {
+                      var items = bankData.keys.toList();
+                      return items
+                          .map<PopupMenuItem<String>>((value) {
+                        return new PopupMenuItem(
+                            child: new Text(value.toString()), value: value.toString());
+                      }).toList();
+                    },
+                  ),
+                ),
+              )
           ],
         ),
       ),
