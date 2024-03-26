@@ -29,7 +29,7 @@ Future<Map> fetchBankDetails() async {
   return Future.value(bankDetails);
 }
 
-updateGsheetBankDetails(data, bankIndex, bankName, bankBalance) async {
+updateGsheetBankDetails(data, bankName, bankBalance) async {
   final ss = await gSheetLoader();
   var sheet = ss.worksheetByTitle('Overall');
   const startcolumn = 29;
@@ -208,7 +208,7 @@ class BankingRouteRouteState extends State<BankingRoute> {
           showLoaderDialog(context);
 
           // Logic to call the gheet and update the value
-          updateGsheetBankDetails(data, bankIndex, bankName, bankBalance);
+          updateGsheetBankDetails(data, bankName, bankBalance);
           final ss = await gSheetLoader();
           var sheet = ss.worksheetByTitle('Overall');
 
