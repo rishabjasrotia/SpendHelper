@@ -181,14 +181,11 @@ class CardBasicRouteState extends State<CardBasicRoute> {
 
         child: Column(
           children: <Widget>[
-            CarouselSlider(items: [
-                familyExpenseCard(),
-                personalExpenseCard(),
-                creditExpenseCard()
-              ],
-              carouselController: _controller,
-              options: CarouselOptions(enlargeCenterPage: true, height: 200),
-            ),
+            familyExpenseCard(),
+            Container(height: 10),
+            personalExpenseCard(),
+            Container(height: 10),
+            creditExpenseCard()
           ],
         ),
       ),
@@ -205,7 +202,7 @@ class CardBasicRouteState extends State<CardBasicRoute> {
                 Navigator.pushReplacementNamed(context, "/familyExpense");
               },
               child: Container(
-                height: 150,
+                height: 180,
                 width: double.infinity,
                 padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
@@ -280,7 +277,7 @@ class CardBasicRouteState extends State<CardBasicRoute> {
                 Navigator.pushReplacementNamed(context, "/personalExpense");
               },
               child:  Container(
-                height: 150,
+                height: 180,
                 width: double.infinity,
                 padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
@@ -355,7 +352,7 @@ class CardBasicRouteState extends State<CardBasicRoute> {
                 Navigator.pushReplacementNamed(context, "/creditExpense");
               },
               child: Container(
-                height: 150,
+                height: 180,
                 width: double.infinity,
                 padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
